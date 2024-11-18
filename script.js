@@ -24,35 +24,39 @@ const words = [
 ];
 
 let countDown;
+let randomWord;
 let timeInterval = 1000;
+
+const timeElement = document.getElementById("time");
+const scoreElement = document.getElementById("score");
+const wordElement = document.getElementById("word");
+const inputElement = document.querySelector("input");
+const settingsElement = document.getElementById("settings-form");
+const toggleSettingsBtn = document.getElementById("settings-btn");
 
 function addWordToDOM() {
   const random = Math.floor(Math.random() * words.length);
-  const randomWord = words[random];
-  const wordElement = document.getElementById("word");
+  randomWord = words[random];
   wordElement.textContent = randomWord;
 }
 addWordToDOM();
 updateTime();
 
 function updateScore() {
-  const scoreElement = document.getElementById("score");
   const score = parseInt(scoreElement.textContent);
   scoreElement.textContent = score + 1;
 }
 
 function incrementTime() {
-  const timeElement = document.getElementById("time");
-  const time = parseInt(timeElement.textContent);
-  timeElement.textContent = time + 5;
+  const iTime = parseInt(timeElement.textContent);
+  timeElement.textContent = iTime + 5;
 }
 
 function decrementTime() {
-  const timeElement = document.getElementById("time");
-  const time = parseInt(timeElement.textContent);
+  const dTime = parseInt(timeElement.textContent);
 
-  if (time > 0) {
-    timeElement.textContent = time - 1;
+  if (dTime > 0) {
+    timeElement.textContent = dTime - 1;
   } else {
     gameOver();
   }
@@ -80,16 +84,13 @@ function gameOver() {
       );
 
       if (difficultyLevel === "1") {
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "10";
+        timeElement.textContent = "10";
         validDifficulty = true;
       } else if (difficultyLevel === "2") {
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "7";
+        timeElement.textContent = "7";
         validDifficulty = true;
       } else if (difficultyLevel === "3") {
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "5";
+        timeElement.textContent = "5";
         validDifficulty = true;
       } else {
         alert("Invalid difficulty level. Please type in: 1, 2 or 3.");
@@ -100,7 +101,7 @@ function gameOver() {
     return;
   } else if (gameOverMsg === "2") {
     alert("Thanks for playing!");
-    document.getElementById("score").textContent = "0";
+    scoreElement.textContent = "0";
     return;
   } else {
     alert("Invalid input. Please type in: 1 or 2.");
@@ -109,46 +110,38 @@ function gameOver() {
 }
 
 function resetGame() {
-  document.getElementById("score").textContent = "0";
+  scoreElement.textContent = "0";
   addWordToDOM();
   updateTime();
 }
 
-const input = document.querySelector("input");
-
-input.addEventListener("keypress", function (e) {
+inputElement.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
-    const wordElement = document.getElementById("word");
-    const userInput = input.value.toLowerCase();
-    const randomWord = wordElement.textContent.toLowerCase();
+    const userInput = inputElement.value.toLowerCase();
+    randomWord = wordElement.textContent.toLowerCase();
 
     if (userInput === randomWord) {
       updateScore();
       addWordToDOM();
       incrementTime();
-      input.value = "";
+      inputElement.value = "";
     }
   }
 });
 
-const options = document.getElementById("settings-form");
-
-options.addEventListener("change", function (e) {
+settingsElement.addEventListener("change", function (e) {
   if (e.target.id === "difficulty") {
     const selectedDifficulty = e.target.value;
 
     switch (selectedDifficulty) {
       case "easy":
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "10";
+        timeElement.textContent = "10";
         break;
       case "medium":
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "7";
+        timeElement.textContent = "7";
         break;
       case "hard":
-        timeInterval = 1000;
-        document.getElementById("time").textContent = "5";
+        timeElement.textContent = "5";
         break;
       default:
         alert("Invalid difficulty level");
@@ -158,14 +151,9 @@ options.addEventListener("change", function (e) {
   }
 });
 
-const settingsDiv = document.getElementById("settings-form");
-settingsDiv.style.display = "none";
+settingsElement.style.display = "none";
 
-function hideAndShowSettings() {
-  const settingsDiv = document.getElementById("settings-form");
-  if (settingsDiv.style.display === "none") {
-    settingsDiv.style.display = "block";
-  } else {
-    settingsDiv.style.display = "none";
-  }
-}
+toggleSettingsBtn.addEventListener("click", function () {
+  settingsElement.style.display =
+    settingsElement.style.display === "none" ? "block" : "none";
+});
